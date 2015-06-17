@@ -34,34 +34,122 @@ Enemy.prototype.render = function() {
 
 var Player = function() {
 
-  this.sprite = 'images/char-cat-girl.png';
-//  this.sprite = 'images/zelda-sprites-link.png';
+  this.sprite = 'images/zelda-sprites-link.png';
+
+  //link going down [0], left[1], up[2], right[3]
+    this.Link=[
+                [ {s_x: 0, s_y: 0, s_w: 15, s_h: 16},
+                  {s_x: 0, s_y: 30, s_w: 15, s_h: 16},
+                  {s_x: 0, s_y: 60, s_w: 15, s_h: 16},
+                  {s_x: 0, s_y: 84, s_w: 27, s_h: 16}
+                ],[
+                  {s_x: 30, s_y: 0, s_w: 15, s_h: 16},
+                  {s_x: 30, s_y: 30, s_w: 15, s_h: 16},
+                  {s_x: 30, s_y: 60, s_w: 15, s_h: 16},
+                  {s_x: 24, s_y: 90, s_w: 15, s_h: 27}
+                ],[
+                  {s_x: 62, s_y: 0, s_w: 15, s_h: 16},
+                  {s_x: 62, s_y: 30, s_w: 15, s_h: 16},
+                  {s_x: 60, s_y: 60, s_w: 15, s_h: 16},
+                  {s_x: 60, s_y: 84, s_w: 27, s_h: 16}
+                ],[
+                  {s_x: 90, s_y: 0, s_w: 15, s_h: 16},
+                  {s_x: 90, s_y: 30, s_w: 15, s_h: 16},
+                  {s_x: 90, s_y: 60, s_w: 15, s_h: 16},
+                  {s_x: 90, s_y: 84, s_w: 15, s_h: 27}
+                ],
+              ];
+
+
+  this.s_x=91;
+  this.s_y=0;
+  this.s_w=15;
+  this.s_h=16;
+
+
   this.x = 203;
   this.y = 385;
 
   this.x_ = 203;
   this.y_ = 385;
+
+  this.tickCount = 0;
+  this.ticksPerFrames = 6;
+  this.frame = 0;
+  this.way = 0;
 }
 
 Player.prototype.update = function(dt){
 
-   if (this.x < this.x_){
-      this.x = Math.round(this.x + 300 * dt);
-    //  this.x = this.x_;
-      console.log("x: " + this.x + " x_: " + this.x_);
 
-  } else {
-      this.x = this.x_;
+
+
+  if (this.x < this.x_){ //right
+    this.tickCount += 1;
+    if(this.tickCount > this.ticksPerFrames){
+      if (this.frame < 2 ){
+        this.frame += 1;
+        this.tickCount = 0;
+        if (this.frame == 2){ this.frame = 0; }
+      }
+    }
+    this.x = Math.round(this.x + 5);
+
+  } else if (this.x > this.x_) { // left
+   this.tickCount += 1;
+    if(this.tickCount > this.ticksPerFrames){
+      if (this.frame < 2 ){
+        this.frame += 1;
+        this.tickCount = 0;
+        if (this.frame == 2){ this.frame = 0; }
+      }
+    }
+    this.x = Math.round(this.x - 5);
+
+  } else if (this.y < this.y_){ // down
+    this.tickCount += 1;
+    if(this.tickCount > this.ticksPerFrames){
+      if (this.frame < 2 ){
+        this.frame += 1;
+        this.tickCount = 0;
+        if (this.frame == 2){ this.frame = 0; }
+      }
+    }
+    this.y = Math.round(this.y + 5);
+    console.log("down: " + this.y);
+
+  } else if (this.y > this.y_){ // up
+    this.tickCount += 1;
+    if(this.tickCount > this.ticksPerFrames){
+      if (this.frame < 2 ){
+        this.frame += 1;
+        this.tickCount = 0;
+        if (this.frame == 2){ this.frame = 0; }
+      }
+    }
+    this.y = Math.round(this.y - 5);
+    console.log("up: " + this.y);
+  }
+    else {
+    this.x = this.x_;
+    this.y = this.y_;
   }
 
+}
 
-
-
+Player.prototype.walking = function(dt){
 
 }
 
 Player.prototype.render = function(){
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(Resources.get(this.sprite),
+                              this.Link[this.way][this.frame].s_x,
+                              this.Link[this.way][this.frame].s_y,
+                              this.Link[this.way][this.frame].s_w,
+                              this.Link[this.way][this.frame].s_h, this.x, this.y, 75, 80);
 }
 
 Player.prototype.goRight = function(move){
@@ -79,18 +167,26 @@ Player.prototype.goRightDt = function(dt,move){
 Player.prototype.handleInput = function(e){
   console.log(e);
   if (e == 'right'){
-    this.x_ = this.x_ + 101;
+    this.way = 3;
+    this.x_ = this.x_ + 100;
     console.log("x: " + this.x + "y: " + this.y);
   } else if (e == 'left'){
-    this.x_ = this.x_ - 101;
+    this.way = 1;
+    this.x_ = this.x_ - 100;
     console.log("x: " + this.x + "y: " + this.y);
   } else if (e == 'up'){
-    this.y = this.y - 80;
+    this.way = 2;
+    this.y_ = this.y_ - 80;
     console.log("x: " + this.x + "y: " + this.y);
   } else if (e == 'down'){
-    this.y = this.y + 80;
+    this.way = 0;
+    this.y_ = this.y_ + 80;
     console.log("x: " + this.x + "y: " + this.y);
+  } else if (e == 'space'){
+    console.log("in space");
+
   } else {
+
     console.log("key not recognize");
   }
 
@@ -106,7 +202,6 @@ var randomNum = function(num){
 // Place the player object in a variable called player
 var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 var player = new Player();
-console.log(allEnemies.length);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -115,7 +210,8 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        32: 'space'
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
