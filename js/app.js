@@ -66,16 +66,18 @@ var Player = function() {
   this.s_w=15;
   this.s_h=16;
 
-
-  this.x = 203;
-  this.y = 385;
-
-  this.x_ = 203;
-  this.y_ = 385;
-
+// start position for the player
+  this.x = 214;
+  this.y = 384;
+// if this variables are changed the game loop will move the player
+// to the following coordinates
+  this.x_ = 214;
+  this.y_ = 384;
+// used for animation of player
   this.tickCount = 0;
   this.ticksPerFrames = 6;
   this.frame = 0;
+// direction in which the playing is moving 0=down, etc.
   this.way = 0;
 }
 
@@ -135,9 +137,45 @@ Player.prototype.update = function(dt){
     this.y = this.y_;
   }
 
+  console.log("x: " + this.x + "  y: " + this.y)
+
+
 }
 
-Player.prototype.walking = function(dt){
+Player.prototype.walking = function(way){
+  var store;
+
+  switch (way) {
+      case 0:
+          // down
+          this.way = 0;
+          if ((469 >= this.y_ + 85)){
+            this.y_ = this.y_ + 85;
+          }
+          break;
+      case 1:
+          // left
+          this.way = 1;
+          if ((14 <= this.x_ - 100)){
+            this.x_ = this.x_ - 100;
+          }
+          break;
+      case 2:
+          // up
+          this.way = 2;
+          if ((44 <= this.y_ - 85)){
+            this.y_ = this.y_ - 85;
+          }
+          break;
+      case 3:
+          // right
+          this.way = 3;
+          if ((414 >= this.x_ + 100)){
+            this.x_ = this.x_ + 100;
+          }
+          break;
+  }
+
 
 }
 
@@ -152,41 +190,20 @@ Player.prototype.render = function(){
                               this.Link[this.way][this.frame].s_h, this.x, this.y, 75, 80);
 }
 
-Player.prototype.goRight = function(move){
-  if (move) {
-    this.x = this.x + 100 * dt;
-  } else {
-    console.log("goRight");
-  }
-}
-
-Player.prototype.goRightDt = function(dt,move){
-
-}
 
 Player.prototype.handleInput = function(e){
   console.log(e);
   if (e == 'right'){
-    this.way = 3;
-    this.x_ = this.x_ + 100;
-    console.log("x: " + this.x + "y: " + this.y);
+    this.walking(3);
   } else if (e == 'left'){
-    this.way = 1;
-    this.x_ = this.x_ - 100;
-    console.log("x: " + this.x + "y: " + this.y);
+    this.walking(1);
   } else if (e == 'up'){
-    this.way = 2;
-    this.y_ = this.y_ - 80;
-    console.log("x: " + this.x + "y: " + this.y);
+    this.walking(2);
   } else if (e == 'down'){
-    this.way = 0;
-    this.y_ = this.y_ + 80;
-    console.log("x: " + this.x + "y: " + this.y);
+    this.walking(0);
   } else if (e == 'space'){
     console.log("in space");
-
   } else {
-
     console.log("key not recognize");
   }
 
