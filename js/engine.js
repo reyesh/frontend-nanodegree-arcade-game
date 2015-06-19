@@ -80,9 +80,27 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
+    function checkCollisions(){
+
+    /*  a = player
+      b = enemy1
+
+      if (a.x + a.width) >= (b.x) &&
+        (a.x) <= (b.x + b.width) &&
+        (a.y + a.height) >= (b.y) &&
+        (a.y) <= (b.y + b.height))
+    */
+
+      if ((player.x + 75) >= allEnemies[0].x + 6 &&
+           (player.x + 75) <= (allEnemies[0].x + 6 + 88) &&
+           (player.y + 80) >= (allEnemies[0].y + 81) &&
+           (player.y) <= (allEnemies[0].y + 81 + 59)){
+        console.log("Collission p.x: " + player.x + " + e.x:" +  allEnemies[0].x);
+      }
+    }
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -164,6 +182,7 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        console.log("game over");
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -180,6 +199,9 @@ var Engine = (function(global) {
         'images/zelda-sprites-link.png'
     ]);
     Resources.onReady(init);
+
+    var snd = new Audio("02-overworld.mp3"); // buffers automatically when created
+    //snd.play();
 
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily

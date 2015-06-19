@@ -8,6 +8,8 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
     this.y = 80 * randomNum(5) - 15;
+    this.speed = 50 * (randomNum(4) + 1);
+    console.log("speed: " + this.speed + " y: " + this.y);
 }
 
 // Update the enemy's position, required method for game
@@ -17,7 +19,7 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (this.x <= 505){
-        this.x = this.x + 100 * dt;
+        this.x = this.x + this.speed * dt;
     } else {
         this.x = 0;
       }
@@ -143,7 +145,6 @@ Player.prototype.update = function(dt){
 }
 
 Player.prototype.walking = function(way){
-  var store;
 
   switch (way) {
       case 0:
@@ -217,7 +218,7 @@ var randomNum = function(num){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
+var allEnemies = [new Enemy()];
 var player = new Player();
 
 // This listens for key presses and sends the keys to your
