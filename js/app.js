@@ -9,7 +9,6 @@ var Enemy = function() {
     this.x = 0;
     this.y = 80 * randomNum(5) - 15;
     this.speed = 50 * (randomNum(4) + 1);
-    console.log("speed: " + this.speed + " y: " + this.y);
 }
 
 // Update the enemy's position, required method for game
@@ -27,7 +26,9 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
+  if(gameData.level == 1 || gameData.level ==2) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  }
 }
 
 // Now write your own player class
@@ -71,6 +72,11 @@ var Player = function() {
 // start position for the player
   this.x = 214;
   this.y = 384;
+//this start position for the coord used in Game class
+  this.row = 4;
+  this.col = 2;
+  this.rowMax = 4;
+  this.colMax = 5;
 // if this variables are changed the game loop will move the player
 // to the following coordinates
   this.x_ = 214;
@@ -120,7 +126,6 @@ Player.prototype.update = function(dt){
       }
     }
     this.y = Math.round(this.y + 5);
-    console.log("down: " + this.y);
 
   } else if (this.y > this.y_){ // up
     this.tickCount += 1;
@@ -132,19 +137,86 @@ Player.prototype.update = function(dt){
       }
     }
     this.y = Math.round(this.y - 5);
-    console.log("up: " + this.y);
   }
     else {
     this.x = this.x_;
     this.y = this.y_;
   }
 
-  console.log("x: " + this.x + "  y: " + this.y)
 
+}
+
+Player.prototype.walkable = function(letter){
+
+  if (letter == 'w') {
+    return false;
+  } else if (letter == 's') {
+    return true;
+  } else if (letter == 'g'){ // if letter equals g, it returns the grass-block
+    return true;
+  } else {
+    return false;
+  }
 
 }
 
 Player.prototype.walking = function(way){
+
+  switch (way) {
+      case 0:
+          // down
+          this.way = 0;
+          if (this.row+1 > this.rowMax+1) {console.log("these are the breaks"); break;}
+          if (this.walkable(gameData.levels[gameData.level][this.row+1][this.col])){
+            this.y_ = this.y_ + 85;
+            this.row++;
+            console.log(gameData.levels[gameData.level][this.row][this.col]);
+            console.log("row: " + this.row + "  col: " + this.col);
+          }
+
+          break;
+      case 1:
+          // left
+          this.way = 1;
+          if (this.col-1 < 0 ) {console.log("these are the breaks"); break;}
+          if (this.walkable(gameData.levels[gameData.level][this.row][this.col-1])){
+            this.x_ = this.x_ - 100;
+            this.col--;
+            console.log(gameData.levels[gameData.level][this.row][this.col]);
+            console.log("row: " + this.row + "  col: " + this.col);
+
+          }
+          break;
+      case 2:
+          // up
+          this.way = 2;
+          if (this.row-1 < 0 ) {console.log("these are the breaks"); break;}
+          if (this.walkable(gameData.levels[gameData.level][this.row-1][this.col])){
+            this.y_ = this.y_ - 85;
+            this.row--;
+            console.log(gameData.levels[gameData.level][this.row][this.col]);
+            console.log("row: " + this.row + "  col: " + this.col);
+
+          }
+          break;
+      case 3:
+          // right
+          this.way = 3; console.log(this.col + " ");
+          if (this.col+1 >= this.colMax ) {console.log("these are the breaks"); break;}
+          if (this.walkable(gameData.levels[gameData.level][this.row][this.col+1])){
+            this.x_ = this.x_ + 100;
+            this.col++;
+            console.log(gameData.levels[gameData.level][this.row][this.col]);
+            console.log("row: " + this.row + "  col: " + this.col);
+
+          }
+          break;
+  }
+
+
+}
+
+Player.prototype.walking2 = function(way){
 
   switch (way) {
       case 0:
@@ -184,11 +256,13 @@ Player.prototype.render = function(){
   //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
   ctx.imageSmoothingEnabled = false;
+  if(gameData.level == 1 || gameData.level ==2) {
   ctx.drawImage(Resources.get(this.sprite),
                               this.Link[this.way][this.frame].s_x,
                               this.Link[this.way][this.frame].s_y,
                               this.Link[this.way][this.frame].s_w,
                               this.Link[this.way][this.frame].s_h, this.x, this.y, 75, 80);
+  }
 }
 
 
@@ -204,6 +278,7 @@ Player.prototype.handleInput = function(e){
     this.walking(0);
   } else if (e == 'space'){
     console.log("in space");
+    gameData.level = 1;
   } else {
     console.log("key not recognize");
   }
@@ -214,12 +289,100 @@ var randomNum = function(num){
   return Math.floor(Math.random()*(num));
 }
 
+var Game = function() {
+
+        this.level = 0;
+        this.music = 1;
+        this.snd = new Audio("02-overworld.mp3");
+        this.snd2 = new Audio("04-labyrinth.mp3");
+
+        this.levels= [
+                       [
+                        ['title'],
+                       ],
+                       [
+                        ['s','w','w','w','w'],
+                        ['s','s','s','s','s'],
+                        ['s','s','s','s','s'],
+                        ['s','s','s','s','s'],
+                        ['g','g','g','g','g'],
+                        ['g','g','g','g','g'],
+                      ],
+                      [
+                        ['s','s','s','s','s'],
+                        ['s','w','w','w','w'],
+                        ['s','s','s','s','s'],
+                        ['w','w','w','w','s'],
+                        ['s','s','s','s','s'],
+                        ['s','w','w','w','w'],
+                      ],
+                      [
+                        ['gameover']
+                      ]
+
+                     ];
+        // this is the x & y coordinates for every block the player can be on, this will be used to check a block to see
+        // if it's possible for the player to walk on, for example if the block is water we dont want to player walking there
+        this.coord= [
+                      [{x: 14, y: 44 },{x: 114, y: 44 },{x: 214, y: 44 },{x: 314, y: 44 },{x: 414, y: 44}],
+                      [{x: 14, y: 129},{x: 114, y: 129},{x: 214, y: 129},{x: 314, y: 129},{x: 414, y: 129}],
+                      [{x: 14, y: 214},{x: 114, y: 214},{x: 214, y: 214},{x: 314, y: 214},{x: 414, y: 214}],
+                      [{x: 14, y: 299},{x: 114, y: 299},{x: 214, y: 299},{x: 314, y: 299},{x: 414, y: 299}],
+                      [{x: 14, y: 384},{x: 114, y: 384},{x: 214, y: 384},{x: 314, y: 384},{x: 414, y: 384}],
+                      [{x: 14, y: 469},{x: 114, y: 469},{x: 214, y: 469},{x: 314, y: 469},{x: 414, y: 469}],
+                    ];
+
+
+}
+
+Game.prototype.update = function (row, col){
+
+  if(row==0 && col==0){
+    this.level=2;
+    player.x = 14;
+    player.y = 469;
+    player.row = 5;
+    player.col = 0;
+    player.x_ = 14;
+    player.y_ = 469;
+    gameData.music=2;
+  }
+}
+
+Game.prototype.chkTerrain = function(letter){
+
+  if (letter == 'w') {
+    return 'images/water-block.png';
+  } else if (letter == 's') {
+    return 'images/stone-block.png';
+  } else if (letter == 'g'){ // if letter equals g, it returns the grass-block
+    return 'images/grass-block.png';
+  } else if (letter == 'title'){
+    return 'images/title-screen.png';
+  } else {
+    return 'images/game-over.png';
+  }
+
+}
+
+Game.prototype.playMusic = function(x){
+  if (x == 1) {
+    this.snd.play();
+    this.music = 0;
+  } else if (x == 2){
+    this.snd.pause();
+    this.snd2.play();
+    this.music = 0;
+  }
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [new Enemy()];
 var player = new Player();
+var gameData = new Game();
+console.log(gameData.coord[0][0].y);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

@@ -24,6 +24,8 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         lastTime;
+    var tickCount = 0;
+    var frame = 0;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -45,7 +47,11 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
+
+        if(gameData.level == 1 || gameData.level == 2 ){
+          update(dt);
+          gameData.playMusic(gameData.music);
+        }
         render();
 
         /* Set our lastTime variable which is used to determine the time delta
@@ -79,8 +85,10 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        console.log("hello");
         updateEntities(dt);
         checkCollisions();
+        gameData.update(player.row, player.col);
     }
 
     function checkCollisions(){
@@ -143,7 +151,7 @@ var Engine = (function(global) {
          */
 
         ctx.clearRect(0,0,505,606); // clears the canvas
-
+/*
         for (row = 0; row < numRows; row++) {
             for (col = 0; col < numCols; col++) {
                 /* The drawImage function of the canvas' context element
@@ -152,10 +160,41 @@ var Engine = (function(global) {
                  * We're using our Resources helpers to refer to our images
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
-                 */
+                 */ /*
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
+*/
+//console.log(gameData);
+        if(gameData.level == 0 || gameData.level==3) {
+          console.log(gameData.chkTerrain(gameData.levels[gameData.level][0][0]));
+          ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][0][0])),0,0);
+
+          ctx.font         = '38px ARCADECLASSIC';
+          ctx.fillStyle = 'grey';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Press Space', 160, 450);
+
+          tickCount += 1;
+          if(tickCount > 30){
+
+              tickCount = 0;
+
+              ctx.font         = '38px ARCADECLASSIC';
+              ctx.fillStyle = 'black';
+              ctx.textBaseline = 'top';
+              ctx.fillText('Press Space', 160, 450);
+
+          }
+
+
+        } else {
+          for (row = 0; row <= 5; row++) {
+            for (col = 0; col <= 4; col ++){
+              ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][row][col])), col * 101, row * 83);
+            }
+          }
+      }
 
 
         renderEntities();
@@ -196,12 +235,10 @@ var Engine = (function(global) {
         'images/enemy-bug.png',
         'images/char-boy.png',
         'images/char-cat-girl.png',
-        'images/zelda-sprites-link.png'
+        'images/zelda-sprites-link.png',
+        'images/title-screen.png'
     ]);
     Resources.onReady(init);
-
-    var snd = new Audio("02-overworld.mp3"); // buffers automatically when created
-    //snd.play();
 
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developer's can use it more easily
