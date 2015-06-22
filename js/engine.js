@@ -93,21 +93,40 @@ var Engine = (function(global) {
 
     function checkCollisions(){
 
-    /*  a = player
-      b = enemy1
+      // the following block of code checks to see if the player and all enemies
+      // from level 1 and 2 collide. If it does gameData.level equals 3 which
+      // is the game over screen.
 
-      if (a.x + a.width) >= (b.x) &&
-        (a.x) <= (b.x + b.width) &&
-        (a.y + a.height) >= (b.y) &&
-        (a.y) <= (b.y + b.height))
-    */
+      if (gameData.level == 1){
 
-      if ((player.x + 75) >= allEnemies[0].x + 6 &&
-           (player.x + 75) <= (allEnemies[0].x + 6 + 88) &&
-           (player.y + 80) >= (allEnemies[0].y + 81) &&
-           (player.y) <= (allEnemies[0].y + 81 + 59)){
-        console.log("Collission p.x: " + player.x + " + e.x:" +  allEnemies[0].x);
+          allEnemies.forEach(function(enemy) {
+            if ((player.x + 75) >= (enemy.x + 6) &&
+                 (player.x + 75) <= (enemy.x + 6 + 88) &&
+                 (player.y + 80) >= (enemy.y + 81) &&
+                 (player.y) <= (enemy.y + 81 + 59)) {
+              console.log("Collission p.x: " + player.x + " + e.x:" +  enemy.x );
+              gameData.level = 3;
+              gameData.snd.pause();
+              gameData.snd2.pause();
+            }
+          })
+
+      } else {
+
+        allEnemies2.forEach(function(enemy) {
+          if ((player.x + 75) >= (enemy.x + 6) &&
+               (player.x + 75) <= (enemy.x + 6 + 88) &&
+               (player.y + 80) >= (enemy.y + 81) &&
+               (player.y) <= (enemy.y + 81 + 59)) {
+            console.log("Collission p.x: " + player.x + " + e.x:" +  enemy.x );
+            gameData.level = 3;
+            gameData.snd.pause();
+            gameData.snd2.pause();
+          }
+        })
+
       }
+
     }
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
@@ -117,9 +136,18 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+
+      // each level has different enemy allEnemies and allEnemies2
+
+      if (gameData.level == 1){
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+      } else {
+        allEnemies2.forEach(function(enemy) {
+            enemy.update(dt);
+        });
+      }
         player.update(dt);
     }
 
@@ -151,22 +179,11 @@ var Engine = (function(global) {
          */
 
         ctx.clearRect(0,0,505,606); // clears the canvas
-/*
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
-                /* The drawImage function of the canvas' context element
-                 * requires 3 parameters: the image to draw, the x coordinate
-                 * to start drawing and the y coordinate to start drawing.
-                 * We're using our Resources helpers to refer to our images
-                 * so that we get the benefits of caching these images, since
-                 * we're using them over and over.
-                 */ /*
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
-            }
-        }
-*/
-//console.log(gameData);
-        if(gameData.level == 0 || gameData.level==3) {
+
+        // these are the different screens, there are four in total, title, level 1 & 2
+        // game over, and the winning screen.
+
+        if(gameData.level == 0) {
           console.log(gameData.chkTerrain(gameData.levels[gameData.level][0][0]));
           ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][0][0])),0,0);
 
@@ -174,7 +191,8 @@ var Engine = (function(global) {
           ctx.fillStyle = 'grey';
           ctx.textBaseline = 'top';
           ctx.fillText('Press Space', 160, 450);
-
+          // tickCount keeps track of the fps, so for the block of code below
+          // every 30 frames it prints 'Press Space'
           tickCount += 1;
           if(tickCount > 30){
 
@@ -188,7 +206,27 @@ var Engine = (function(global) {
           }
 
 
-        } else {
+        } else if (gameData.level == 3) {
+          ctx.rect(0,0,606,505);
+          ctx.fillStyle = "black";
+          ctx.fill();
+          ctx.font         = '38px ARCADECLASSIC';
+          ctx.fillStyle = 'grey';
+          ctx.textBaseline = 'top';
+          ctx.fillText('Game Over', 100, 200);
+
+        } else if (gameData.level == 4){
+          ctx.rect(0,0,606,505);
+          ctx.fillStyle = "black";
+          ctx.fill();
+          ctx.font         = '38px ARCADECLASSIC';
+          ctx.fillStyle = 'grey';
+          ctx.textBaseline = 'top';
+          ctx.fillText('You win! The End', 100, 200);
+        }
+
+        else {
+
           for (row = 0; row <= 5; row++) {
             for (col = 0; col <= 4; col ++){
               ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][row][col])), col * 101, row * 83);
@@ -208,9 +246,17 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
+
+        if (gameData.level == 1){
+            allEnemies.forEach(function(enemy) {
+                enemy.render();
+            });
+        } else {
+          allEnemies2.forEach(function(enemy) {
+              enemy.render();
+          });
+
+        }
 
         player.render();
     }

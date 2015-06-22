@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(y, dir) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -7,8 +7,15 @@ var Enemy = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = 0;
-    this.y = 80 * randomNum(5) - 15;
-    this.speed = 50 * (randomNum(4) + 1);
+    this.dir = dir;
+
+    if ( y == "" ){
+      this.y = 80 * randomNum(5) - 15;
+      this.speed = 50 * (randomNum(4) + 1);
+    } else {
+      this.y = y;
+      this.speed = 50 * (randomNum(4) + 1);
+    }
 }
 
 // Update the enemy's position, required method for game
@@ -17,15 +24,33 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    if (this.x <= 505){
-        this.x = this.x + this.speed * dt;
-    } else {
-        this.x = 0;
+
+    // depending on the enemy dir variable, the enemy can move left or right on screen
+
+    if (this.dir == 'right'){
+
+        if (this.x <= 505){
+            this.x = this.x + this.speed * dt;
+        } else {
+            this.x = 0;
+          }
+
+      } else {
+
+        if (this.x >= 0){
+            this.x = this.x - this.speed * dt;
+        } else {
+            this.x = 505;
+          }
+
       }
 }
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
+
+  // we only want the enemy to render when the game is in an actual level
+
   if(gameData.level == 1 || gameData.level ==2) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
@@ -39,8 +64,10 @@ var Player = function() {
 
   this.sprite = 'images/zelda-sprites-link.png';
 
+  //this arrow holds the different position from the sprite sheet
+  // it also has link in attack mode but currently it's not being used the 3rd and 4th frames.
   //link going down [0], left[1], up[2], right[3]
-    this.Link=[
+  this.Link=[
                 [ {s_x: 0, s_y: 0, s_w: 15, s_h: 16},
                   {s_x: 0, s_y: 30, s_w: 15, s_h: 16},
                   {s_x: 0, s_y: 60, s_w: 15, s_h: 16},
@@ -70,17 +97,17 @@ var Player = function() {
   this.s_h=16;
 
 // start position for the player
-  this.x = 214;
-  this.y = 384;
+  this.x = 14;
+  this.y = 469;
 //this start position for the coord used in Game class
-  this.row = 4;
-  this.col = 2;
+  this.row = 5;
+  this.col = 0;
   this.rowMax = 4;
   this.colMax = 5;
 // if this variables are changed the game loop will move the player
 // to the following coordinates
-  this.x_ = 214;
-  this.y_ = 384;
+  this.x_ = 14;
+  this.y_ = 469;
 // used for animation of player
   this.tickCount = 0;
   this.ticksPerFrames = 6;
@@ -92,7 +119,8 @@ var Player = function() {
 Player.prototype.update = function(dt){
 
 
-
+// the following detects whether the player wants his charector to move
+// and handles the animation
 
   if (this.x < this.x_){ //right
     this.tickCount += 1;
@@ -147,7 +175,7 @@ Player.prototype.update = function(dt){
 }
 
 Player.prototype.walkable = function(letter){
-
+// function used to determine if the terrain is walkable
   if (letter == 'w') {
     return false;
   } else if (letter == 's') {
@@ -162,6 +190,8 @@ Player.prototype.walkable = function(letter){
 
 Player.prototype.walking = function(way){
 
+  // this function sets the boundary for the player to move on screen. Basically
+  // so he doesnt go off screen, and walk on water.
   switch (way) {
       case 0:
           // down
@@ -216,44 +246,9 @@ Player.prototype.walking = function(way){
 
 }
 
-Player.prototype.walking2 = function(way){
-
-  switch (way) {
-      case 0:
-          // down
-          this.way = 0;
-          if ((469 >= this.y_ + 85)){
-            this.y_ = this.y_ + 85;
-          }
-          break;
-      case 1:
-          // left
-          this.way = 1;
-          if ((14 <= this.x_ - 100)){
-            this.x_ = this.x_ - 100;
-          }
-          break;
-      case 2:
-          // up
-          this.way = 2;
-          if ((44 <= this.y_ - 85)){
-            this.y_ = this.y_ - 85;
-          }
-          break;
-      case 3:
-          // right
-          this.way = 3;
-          if ((414 >= this.x_ + 100)){
-            this.x_ = this.x_ + 100;
-          }
-          break;
-  }
-
-
-}
 
 Player.prototype.render = function(){
-  //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  //we only want the player rendered if his an a level
 
   ctx.imageSmoothingEnabled = false;
   if(gameData.level == 1 || gameData.level ==2) {
@@ -277,7 +272,6 @@ Player.prototype.handleInput = function(e){
   } else if (e == 'down'){
     this.walking(0);
   } else if (e == 'space'){
-    console.log("in space");
     gameData.level = 1;
   } else {
     console.log("key not recognize");
@@ -288,6 +282,9 @@ Player.prototype.handleInput = function(e){
 var randomNum = function(num){
   return Math.floor(Math.random()*(num));
 }
+
+// the following class is used to store the current state of the game, levels
+// sounds, and terrain
 
 var Game = function() {
 
@@ -302,10 +299,10 @@ var Game = function() {
                        ],
                        [
                         ['s','w','w','w','w'],
-                        ['s','s','s','s','s'],
-                        ['s','s','s','s','s'],
-                        ['s','s','s','s','s'],
                         ['g','g','g','g','g'],
+                        ['g','g','g','g','g'],
+                        ['g','g','w','w','g'],
+                        ['w','w','w','w','g'],
                         ['g','g','g','g','g'],
                       ],
                       [
@@ -318,6 +315,9 @@ var Game = function() {
                       ],
                       [
                         ['gameover']
+                      ],
+                      [
+                        ['theend']
                       ]
 
                      ];
@@ -337,16 +337,27 @@ var Game = function() {
 
 Game.prototype.update = function (row, col){
 
-  if(row==0 && col==0){
-    this.level=2;
-    player.x = 14;
-    player.y = 469;
-    player.row = 5;
-    player.col = 0;
-    player.x_ = 14;
-    player.y_ = 469;
-    gameData.music=2;
+  //this function detects if the player reaches certain spots on the level
+  //which advances the player to the next level.
+
+  if (gameData.level==1){
+    if(row==0 && col==0 && player.way==2){
+      this.level=2;
+      player.x = 14;
+      player.y = 469;
+      player.row = 5;
+      player.col = 0;
+      player.x_ = 14;
+      player.y_ = 469;
+      gameData.music=2;
+    }
+  } else if (gameData.level==2){
+    if(row==0 && col==4 && player.way==2){
+      this.level=4;
+      gameData.music=1;
+    }
   }
+
 }
 
 Game.prototype.chkTerrain = function(letter){
@@ -360,7 +371,7 @@ Game.prototype.chkTerrain = function(letter){
   } else if (letter == 'title'){
     return 'images/title-screen.png';
   } else {
-    return 'images/game-over.png';
+    return 'images/grass-block.png';
   }
 
 }
@@ -368,6 +379,7 @@ Game.prototype.chkTerrain = function(letter){
 Game.prototype.playMusic = function(x){
   if (x == 1) {
     this.snd.play();
+    this.snd2.pause();
     this.music = 0;
   } else if (x == 2){
     this.snd.pause();
@@ -379,7 +391,8 @@ Game.prototype.playMusic = function(x){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy()];
+var allEnemies = [new Enemy(0,'right'),new Enemy(0,'right'),new Enemy(0,'right')];
+var allEnemies2 = [new Enemy(305,'right'),new Enemy(145,'left'),new Enemy(-15,'right')];
 var player = new Player();
 var gameData = new Game();
 console.log(gameData.coord[0][0].y);
