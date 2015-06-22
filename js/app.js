@@ -9,14 +9,14 @@ var Enemy = function(y, dir) {
     this.x = 0;
     this.dir = dir;
 
-    if ( y == "" ){
+    if ( !y ){
       this.y = 80 * randomNum(5) - 15;
       this.speed = 50 * (randomNum(4) + 1);
     } else {
       this.y = y;
       this.speed = 50 * (randomNum(4) + 1);
     }
-}
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -44,7 +44,7 @@ Enemy.prototype.update = function(dt) {
           }
 
       }
-}
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -54,7 +54,7 @@ Enemy.prototype.render = function() {
   if(gameData.level == 1 || gameData.level ==2) {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
-}
+};
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -68,27 +68,27 @@ var Player = function() {
   // it also has link in attack mode but currently it's not being used the 3rd and 4th frames.
   //link going down [0], left[1], up[2], right[3]
   this.Link=[
-                [ {s_x: 0, s_y: 0, s_w: 15, s_h: 16},
-                  {s_x: 0, s_y: 30, s_w: 15, s_h: 16},
-                  {s_x: 0, s_y: 60, s_w: 15, s_h: 16},
-                  {s_x: 0, s_y: 84, s_w: 27, s_h: 16}
-                ],[
-                  {s_x: 30, s_y: 0, s_w: 15, s_h: 16},
-                  {s_x: 30, s_y: 30, s_w: 15, s_h: 16},
-                  {s_x: 30, s_y: 60, s_w: 15, s_h: 16},
-                  {s_x: 24, s_y: 90, s_w: 15, s_h: 27}
-                ],[
-                  {s_x: 62, s_y: 0, s_w: 15, s_h: 16},
-                  {s_x: 62, s_y: 30, s_w: 15, s_h: 16},
-                  {s_x: 60, s_y: 60, s_w: 15, s_h: 16},
-                  {s_x: 60, s_y: 84, s_w: 27, s_h: 16}
-                ],[
-                  {s_x: 90, s_y: 0, s_w: 15, s_h: 16},
-                  {s_x: 90, s_y: 30, s_w: 15, s_h: 16},
-                  {s_x: 90, s_y: 60, s_w: 15, s_h: 16},
-                  {s_x: 90, s_y: 84, s_w: 15, s_h: 27}
-                ],
-              ];
+              [ {s_x: 0, s_y: 0, s_w: 15, s_h: 16},
+                {s_x: 0, s_y: 30, s_w: 15, s_h: 16},
+                {s_x: 0, s_y: 60, s_w: 15, s_h: 16},
+                {s_x: 0, s_y: 84, s_w: 27, s_h: 16}
+              ],[
+                {s_x: 30, s_y: 0, s_w: 15, s_h: 16},
+                {s_x: 30, s_y: 30, s_w: 15, s_h: 16},
+                {s_x: 30, s_y: 60, s_w: 15, s_h: 16},
+                {s_x: 24, s_y: 90, s_w: 15, s_h: 27}
+              ],[
+                {s_x: 62, s_y: 0, s_w: 15, s_h: 16},
+                {s_x: 62, s_y: 30, s_w: 15, s_h: 16},
+                {s_x: 60, s_y: 60, s_w: 15, s_h: 16},
+                {s_x: 60, s_y: 84, s_w: 27, s_h: 16}
+              ],[
+                {s_x: 90, s_y: 0, s_w: 15, s_h: 16},
+                {s_x: 90, s_y: 30, s_w: 15, s_h: 16},
+                {s_x: 90, s_y: 60, s_w: 15, s_h: 16},
+                {s_x: 90, s_y: 84, s_w: 15, s_h: 27}
+              ],
+            ];
 
 
   this.s_x=91;
@@ -114,7 +114,7 @@ var Player = function() {
   this.frame = 0;
 // direction in which the playing is moving 0=down, etc.
   this.way = 0;
-}
+};
 
 Player.prototype.update = function(dt){
 
@@ -172,7 +172,7 @@ Player.prototype.update = function(dt){
   }
 
 
-}
+};
 
 Player.prototype.walkable = function(letter){
 // function used to determine if the terrain is walkable
@@ -186,7 +186,7 @@ Player.prototype.walkable = function(letter){
     return false;
   }
 
-}
+};
 
 Player.prototype.walking = function(way){
 
@@ -244,7 +244,7 @@ Player.prototype.walking = function(way){
   }
 
 
-}
+};
 
 
 Player.prototype.render = function(){
@@ -258,7 +258,7 @@ Player.prototype.render = function(){
                               this.Link[this.way][this.frame].s_w,
                               this.Link[this.way][this.frame].s_h, this.x, this.y, 75, 80);
   }
-}
+};
 
 
 Player.prototype.handleInput = function(e){
@@ -277,11 +277,11 @@ Player.prototype.handleInput = function(e){
     console.log("key not recognize");
   }
 
-}
+};
 
 var randomNum = function(num){
   return Math.floor(Math.random()*(num));
-}
+};
 
 // the following class is used to store the current state of the game, levels
 // sounds, and terrain
@@ -333,7 +333,7 @@ var Game = function() {
                     ];
 
 
-}
+};
 
 Game.prototype.update = function (row, col){
 
@@ -341,7 +341,7 @@ Game.prototype.update = function (row, col){
   //which advances the player to the next level.
 
   if (gameData.level==1){
-    if(row==0 && col==0 && player.way==2){
+    if(row===0 && col===0 && player.way==2){
       this.level=2;
       player.x = 14;
       player.y = 469;
@@ -352,13 +352,13 @@ Game.prototype.update = function (row, col){
       gameData.music=2;
     }
   } else if (gameData.level==2){
-    if(row==0 && col==4 && player.way==2){
+    if(row===0 && col==4 && player.way==2){
       this.level=4;
       gameData.music=1;
     }
   }
 
-}
+};
 
 Game.prototype.chkTerrain = function(letter){
 
@@ -374,7 +374,7 @@ Game.prototype.chkTerrain = function(letter){
     return 'images/grass-block.png';
   }
 
-}
+};
 
 Game.prototype.playMusic = function(x){
   if (x == 1) {
@@ -386,7 +386,7 @@ Game.prototype.playMusic = function(x){
     this.snd2.play();
     this.music = 0;
   }
-}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies

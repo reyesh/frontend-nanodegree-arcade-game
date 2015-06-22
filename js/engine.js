@@ -63,7 +63,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
-    };
+    }
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -85,7 +85,6 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        console.log("hello");
         updateEntities(dt);
         checkCollisions();
         gameData.update(player.row, player.col);
@@ -104,12 +103,11 @@ var Engine = (function(global) {
                  (player.x + 75) <= (enemy.x + 6 + 88) &&
                  (player.y + 80) >= (enemy.y + 81) &&
                  (player.y) <= (enemy.y + 81 + 59)) {
-              console.log("Collission p.x: " + player.x + " + e.x:" +  enemy.x );
-              gameData.level = 3;
-              gameData.snd.pause();
-              gameData.snd2.pause();
+                    gameData.level = 3;
+                    gameData.snd.pause();
+                    gameData.snd2.pause();
             }
-          })
+          });
 
       } else {
 
@@ -118,12 +116,11 @@ var Engine = (function(global) {
                (player.x + 75) <= (enemy.x + 6 + 88) &&
                (player.y + 80) >= (enemy.y + 81) &&
                (player.y) <= (enemy.y + 81 + 59)) {
-            console.log("Collission p.x: " + player.x + " + e.x:" +  enemy.x );
-            gameData.level = 3;
-            gameData.snd.pause();
-            gameData.snd2.pause();
+                    gameData.level = 3;
+                    gameData.snd.pause();
+                    gameData.snd2.pause();
           }
-        })
+        });
 
       }
 
@@ -183,46 +180,46 @@ var Engine = (function(global) {
         // these are the different screens, there are four in total, title, level 1 & 2
         // game over, and the winning screen.
 
-        if(gameData.level == 0) {
-          console.log(gameData.chkTerrain(gameData.levels[gameData.level][0][0]));
-          ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][0][0])),0,0);
+        if(gameData.level === 0) {
 
-          ctx.font         = '38px ARCADECLASSIC';
-          ctx.fillStyle = 'grey';
-          ctx.textBaseline = 'top';
-          ctx.fillText('Press Space', 160, 450);
-          // tickCount keeps track of the fps, so for the block of code below
-          // every 30 frames it prints 'Press Space'
-          tickCount += 1;
-          if(tickCount > 30){
+            ctx.drawImage(Resources.get(gameData.chkTerrain(gameData.levels[gameData.level][0][0])),0,0);
 
-              tickCount = 0;
+            ctx.font         = '38px ARCADECLASSIC';
+            ctx.fillStyle = 'grey';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Press Space', 160, 450);
+            // tickCount keeps track of the fps, so for the block of code below
+            // every 30 frames it prints 'Press Space'
+            tickCount += 1;
+            if(tickCount > 30){
 
-              ctx.font         = '38px ARCADECLASSIC';
-              ctx.fillStyle = 'black';
-              ctx.textBaseline = 'top';
-              ctx.fillText('Press Space', 160, 450);
+                tickCount = 0;
 
-          }
+                ctx.font         = '38px ARCADECLASSIC';
+                ctx.fillStyle = 'black';
+                ctx.textBaseline = 'top';
+                ctx.fillText('Press Space', 160, 450);
+
+            }
 
 
         } else if (gameData.level == 3) {
-          ctx.rect(0,0,606,505);
-          ctx.fillStyle = "black";
-          ctx.fill();
-          ctx.font         = '38px ARCADECLASSIC';
-          ctx.fillStyle = 'grey';
-          ctx.textBaseline = 'top';
-          ctx.fillText('Game Over', 100, 200);
+            ctx.rect(0,0,606,505);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.font         = '38px ARCADECLASSIC';
+            ctx.fillStyle = 'grey';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Game Over', 100, 200);
 
         } else if (gameData.level == 4){
-          ctx.rect(0,0,606,505);
-          ctx.fillStyle = "black";
-          ctx.fill();
-          ctx.font         = '38px ARCADECLASSIC';
-          ctx.fillStyle = 'grey';
-          ctx.textBaseline = 'top';
-          ctx.fillText('You win! The End', 100, 200);
+            ctx.rect(0,0,606,505);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.font         = '38px ARCADECLASSIC';
+            ctx.fillStyle = 'grey';
+            ctx.textBaseline = 'top';
+            ctx.fillText('You win! The End', 100, 200);
         }
 
         else {
@@ -267,7 +264,6 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
-        console.log("game over");
     }
 
     /* Go ahead and load all of the images we know we're going to need to
