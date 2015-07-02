@@ -200,8 +200,6 @@ Player.prototype.walking = function(way){
           if (this.walkable(gameData.levels[gameData.level][this.row+1][this.col])){
             this.y_ = this.y_ + 85;
             this.row++;
-            console.log(gameData.levels[gameData.level][this.row][this.col]);
-            console.log("row: " + this.row + "  col: " + this.col);
           }
 
           break;
@@ -212,9 +210,6 @@ Player.prototype.walking = function(way){
           if (this.walkable(gameData.levels[gameData.level][this.row][this.col-1])){
             this.x_ = this.x_ - 100;
             this.col--;
-            console.log(gameData.levels[gameData.level][this.row][this.col]);
-            console.log("row: " + this.row + "  col: " + this.col);
-
           }
           break;
       case 2:
@@ -224,9 +219,6 @@ Player.prototype.walking = function(way){
           if (this.walkable(gameData.levels[gameData.level][this.row-1][this.col])){
             this.y_ = this.y_ - 85;
             this.row--;
-            console.log(gameData.levels[gameData.level][this.row][this.col]);
-            console.log("row: " + this.row + "  col: " + this.col);
-
           }
           break;
       case 3:
@@ -236,9 +228,6 @@ Player.prototype.walking = function(way){
           if (this.walkable(gameData.levels[gameData.level][this.row][this.col+1])){
             this.x_ = this.x_ + 100;
             this.col++;
-            console.log(gameData.levels[gameData.level][this.row][this.col]);
-            console.log("row: " + this.row + "  col: " + this.col);
-
           }
           break;
   }
@@ -262,7 +251,6 @@ Player.prototype.render = function(){
 
 
 Player.prototype.handleInput = function(e){
-  console.log(e);
   if (e == 'right'){
     this.walking(3);
   } else if (e == 'left'){
@@ -395,7 +383,6 @@ var allEnemies = [new Enemy(0,'right'),new Enemy(0,'right'),new Enemy(0,'right')
 var allEnemies2 = [new Enemy(305,'right'),new Enemy(145,'left'),new Enemy(-15,'right')];
 var player = new Player();
 var gameData = new Game();
-console.log(gameData.coord[0][0].y);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

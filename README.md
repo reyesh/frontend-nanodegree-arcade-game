@@ -12,6 +12,9 @@ get to the top most right block and press up
 Avoid the water bugs! You would need to refresh the browser if you get to
 the "game over" screen.
 
+[Play Online](http://reye.sh/p3)
+
+
 
 frontend-nanodegree-arcade-game
 ===============================
